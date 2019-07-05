@@ -1,0 +1,37 @@
+spring:
+  cloud:
+    gateway:
+      default-filters:
+      routes:
+        - id:  user-server
+          # lb代表从注册中心获取服务
+          uri: lb://user
+          predicates:
+            # 转发该路径
+            - Path=/user/**
+          # 带前缀
+          filters:
+            - StripPrefix=1
+        - id:  publish-server
+          # lb代表从注册中心获取服务
+          uri: lb://publish
+          predicates:
+            # 转发该路径
+            - Path=/publish/**
+          filters:
+            - StripPrefix=1
+
+#服务注册中心实例的主机名、端口
+#是否向服务注册中心注册自己
+#是否检索服务
+#服务注册中心的配置内容，指定服务注册中心的位置
+eureka:
+  port:
+    6110
+  instance:
+    hostname: localhost
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:${eureka.port}/eureka/
